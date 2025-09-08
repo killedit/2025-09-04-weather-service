@@ -1,18 +1,20 @@
 # Weather Service Application
 
+![alt text](/resources/images/weather-service-screenshot.png)
+
 This application displays current temperature and a trend for a city in Celsius. It's a RESTful API with just one resource.
 
 `http://127.0.0.1:8087/weather/{CITY}`
 
-It makes calls to two different open APIs. First one is necessary to obtain the latitude and longitude of the city and pass them to the second API which does not support picking a city by name.
+It makes calls to two different open APIs. First one is necessary to obtain the latitude and longitude of the city and pass then to the second API which does not support picking a city by name.
 
-Finally I obtain the current temperature and the median temperature for the previous ten days.
+I obtain the current temperature and the median temperature for the previous ten days.
 
 All these values are stored in Redis for 1h to reduce uncessary calls to the open APIs.
 
 ## Technical aspects of the task
 
-For this task no database is needed. Still Laravel fails is none is set so I have defined in memory SQLite in the environment settings.
+For this task no database is needed. Still Laravel fails if none is set so I have defined in memory SQLite in the environment settings.
 
 Download and build the project:
 
@@ -22,12 +24,15 @@ cd 2025-09-04-weather-service
 docker compose up -d --build
 ```
 
+You can explore the application at `http://127.0.0.1:8087/weather/{Sofia}`.
+
 ### Docker containers:
 
 1. Laravel - here lives my application. The easiest way to explore what is stored in the cache is attaching to it:
 
 ```
 php artisan tinker
+
 > Cache::get('geo:Sofia');
 = [
     "lat" => 42.69751,
@@ -93,12 +98,12 @@ Should result in such output:
 1) "laravel-database-laravel-cache-weather:42.69751,23.32415"
 2) "laravel-database-laravel-cache-geo:Sofia"
 ```
-Then we can check the TTL.
+Then we can check the TTL of the cache.
 ```
 ttl "laravel-database-laravel-cache-weather:42.69751,23.32415"
 (integer) 2961
 ```
-## Some Edge Cases
+## Ideas for improvement
 
 I have decided not to deal with this since it will require some additional thought.
 
@@ -109,20 +114,25 @@ And Warsaw, USA..
 3. Warsaw, New York
 4. Warsaw, North Carolina
 
-I have limited the results to the first one the API is returning which is also the most obvious result. Second link returns ten results:
+I couldn't find an API where I can filter cities by country, postal code or country ISO code:
 
-https://geocoding-api.open-meteo.com/v1/search?name=Sofia&count=1
-https://geocoding-api.open-meteo.com/v1/search?name=Sofia
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia&count=1 
 
-Filtering I've tried is not working:
+Filters do not work:
 
 - &country=Bulgaria
 - &country_code=BG
 - &postcodes=1000
 - &country_id=732800
 
+What's more if I decide to loop over the results and select a city by country what happens when there are two cites called `Sofia` in `Moldova` for example? Same country_code, country, timezone:
+
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia 
+
+I thought of using another free tier API like `http://api.openweathermap.org/data/2.5/weather?q=sofia&appid={MY_API_KEY}&units=metric{&limit=1}`. Even without the filter it returns just one result.
+
 ## Testing
-Attach to Laraval container and run `php artisan test` inside. This will run both unit and integration tests. It's faking external HTTP calls with no actual API usage. The results should look like this:
+Attach to Laravel container and run `php artisan test` inside. This will run both unit and integration tests. It's faking external HTTP calls with no actual API usage. The results should look like this:
 ```
 php artisan test
 
