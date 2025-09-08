@@ -18,18 +18,28 @@ class WeatherController extends Controller
 
     public function show(string $city)
     {
-        $coordinates = $this->geo->getCoordinates($city);
-        if (!$coordinates) {
-            abort(404, "City not found");
+        $geo = app(\App\Services\GeoService::class);
+        $geoData = $geo->getCoordinates($city);
+
+        if (!$geoData) {
+            // abort(404, "City not found");
+            if (request()->wantsJson()) {
+                return response()->json(['error' => 'City not found'], 404);
+            }
+            return view('weather.show', ['error' => 'City not found']);
         }
 
-        $data = $this->weather->getWeather($coordinates['lat'], $coordinates['lon']);
-        if (!$data) {
-            abort(500, "Weather API failed");
-        }
+        // $data = $this->weather->getWeather($geoData['lat'], $geoData['lon']);
+        // if (!$data) {
+        //     abort(500, "Weather API failed");
+        // }
 
-        $current = $data['current_weather']['temperature'];
-        $avg = $this->weather->calculateTrend($data['daily']);
+        $weather = app(\App\Services\WeatherService::class);
+        $weatherData = $weather->getWeather($geoData['lat'], $geoData['lon']);
+
+// dd($data);
+        $current = $weatherData['current_weather']['temperature'];
+        $avg = $weather->calculateTrend($weatherData['daily']);
 
         if($current > $avg) {
             $sign = "🥵";
@@ -39,10 +49,24 @@ class WeatherController extends Controller
             $sign = "~";
         }
 
-        return view('weather.show', [
+        // return view('weather.show', [
+        //     'city' => ucfirst($city),
+        //     'country' => ucfirst($geoData['country']),
+        //     'temperature' => $current,
+        //     'sign' => $sign,
+        // ]);
+
+        $data = [
             'city' => ucfirst($city),
+            'country' => ucfirst($geoData['country']),
             'temperature' => $current,
             'sign' => $sign,
-        ]);
+        ];
+
+        if (request()->wantsJson()) {
+            return response()->json($data);
+        }
+
+        return view('weather.show', $data);
     }
 }

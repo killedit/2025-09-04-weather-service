@@ -24,8 +24,8 @@ docker compose up -d --build
 
 ### Docker containers:
 
-1. Laravel
-Here lives my application. The easiest way to explore what is stored in the cache is attaching to it:
+1. Laravel - here lives my application. The easiest way to explore what is stored in the cache is attaching to it:
+
 ```
 php artisan tinker
 > Cache::get('geo:Sofia');
@@ -78,8 +78,10 @@ php artisan tinker
         "2025-09-04",
 :
 ```
-2. Nginx - fast web server and reverse proxy, serving static files and forwarding request to Laravel.
-3. Redis - provides in-memory caching and avoids repeatative API calls.
+2. Nginx - of course not needed at the moment for this small application, but if this application is to reach production it will be needed to deal with a high number of concurent connections, load balancing, caching, serving static content quickly.
+
+3. Redis - provides in-memory caching and avoids repeatative API calls. It's easier to set-up than memcached with Laravel.
+
 To check what happens with the cache let's attach to this container:
 ```
 docker exec -it weather-service-redis redis-cli
@@ -96,6 +98,44 @@ Then we can check the TTL.
 ttl "laravel-database-laravel-cache-weather:42.69751,23.32415"
 (integer) 2961
 ```
+## Some Edge Cases
+
+I have decided not to deal with this since it will require some additional thought.
+
+There is Warsaw, Poland (capital).
+And Warsaw, USA..
+1. Warsaw, Indiana
+2. Warsaw, Missouri
+3. Warsaw, New York
+4. Warsaw, North Carolina
+
+I have limited the results to the first one the API is returning which is also the most obvious result. Second link returns ten results:
+
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia&count=1
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia
+
+Filtering I've tried is not working:
+
+- &country=Bulgaria
+- &country_code=BG
+- &postcodes=1000
+- &country_id=732800
 
 ## Testing
+Attach to Laraval container and run `php artisan test` inside. This will run both unit and integration tests. It's faking external HTTP calls with no actual API usage. The results should look like this:
+```
+php artisan test
+
+Tests:    4 passed (13 assertions)
+Duration: 0.22s
+```
+
+To check test coverage:
+```
+vendor/bin/phpunit --coverage-html=storage/coverage
+
+4 / 4 (100%)
+Time: 00:00.317, Memory: 34.00 MB
+OK (4 tests, 13 assertions)
+```
 

@@ -39,6 +39,6 @@ class WeatherService
         }
 
         $temps = $daily['temperature_2m_mean'];
-        return array_sum($temps) / count($temps);
+    return array_sum($temps) / count($temps);
     }
 }

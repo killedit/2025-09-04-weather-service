@@ -7,4 +7,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/weather/{city}', [WeatherController::class, 'show']);
+Route::get('/weather/{city}/{country?}', [WeatherController::class, 'show']);

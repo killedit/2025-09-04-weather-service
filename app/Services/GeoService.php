@@ -26,6 +26,8 @@ class GeoService
             return [
                 'lat' => $result['latitude'],
                 'lon' => $result['longitude'],
+                'city' => $result['name'] ?? $city,
+                'country' => $result['country'] ?? null,
             ];
         });
     }
