@@ -14,10 +14,10 @@ class GeoServiceTest extends TestCase
             'https://geocoding-api.open-meteo.com/*' => Http::response([
                 'results' => [
                     [
-                        'city' => 'Sofia',
+                        'name' => 'Sofia',
                         'country' => 'Bulgaria',
-                        'lat' => 42.69751,
-                        'lon' => 23.32415,
+                        'latitude' => 42.69751,
+                        'longitude' => 23.32415,
                     ]
                 ]
             ], 200),

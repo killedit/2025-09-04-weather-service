@@ -167,3 +167,38 @@ Time: 00:00.317, Memory: 34.00 MB
 OK (4 tests, 13 assertions)
 ```
 
+```
+XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text
+
+PHPUnit 11.5.36 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.26 with Xdebug 3.4.5
+Configuration: /var/www/phpunit.xml
+
+....                                                                4 / 4 (100%)
+
+Time: 00:00.339, Memory: 34.00 MB
+
+OK (4 tests, 17 assertions)
+
+
+Code Coverage Report:    
+  2025-10-05 19:26:40    
+                         
+ Summary:                
+  Classes: 40.00% (2/5)  
+  Methods: 50.00% (4/8)  
+  Lines:   84.06% (58/69)
+
+App\Http\Controllers\WeatherController
+  Methods:  50.00% ( 1/ 2)   Lines:  80.77% ( 21/ 26)
+App\Providers\AppServiceProvider
+  Methods: 100.00% ( 2/ 2)   Lines: 100.00% (  2/  2)
+App\Services\GeoService
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% ( 17/ 17)
+App\Services\WeatherService
+  Methods:   0.00% ( 0/ 2)   Lines:  90.00% ( 18/ 20)
+```
+
+The results are generated in a Dashboard in `/storage/coverage/index.html`.
+

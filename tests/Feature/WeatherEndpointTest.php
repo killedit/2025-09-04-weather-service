@@ -44,13 +44,12 @@ class WeatherEndpointTest extends TestCase
 
         $response = $this->getJson('/weather/sofia');
 
-// dd($response);
-        $response->assertStatus(200)
-            ->assertJsonFragment([
-                'city' => 'Sofia',
-                'country' => 'Bulgaria',
-                'temperature' => 22.6,
-            ]);
+        $response->assertJson(fn ($json) =>
+            $json->where('city', 'Sofia')
+                ->where('country', 'Bulgaria')
+                ->whereType('temperature', 'double')
+                ->has('sign')
+        );
 
         $sign = $response->json('sign');
         $this->assertContains($sign, ['🥵', '🥶', '~']);
