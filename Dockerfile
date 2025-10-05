@@ -11,15 +11,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader
-
 COPY . .
 
 COPY docker/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-RUN composer install --optimize-autoloader --no-dev \
-    && chown -R www-data:www-data /var/www
+RUN composer install --optimize-autoloader --no-dev
+
+RUN chown -R www-data:www-data /var/www
 
 EXPOSE 9000
 CMD ["php-fpm"]

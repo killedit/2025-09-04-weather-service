@@ -37,9 +37,11 @@ php artisan tinker
 = [
     "lat" => 42.69751,
     "lon" => 23.32415,
+    "city" => "Sofia",
+    "country" => "Bulgaria",
   ]
 > Cache::get('weather:42.69751,23.32415');
-[
+= [
     "latitude" => 42.6875,
     "longitude" => 23.3125,
     "generationtime_ms" => 0.8857250213623,
@@ -81,7 +83,21 @@ php artisan tinker
         "2025-09-02",
         "2025-09-03",
         "2025-09-04",
-:
+      ],
+      "temperature_2m_mean" => [
+        17.7,
+        19.4,
+        21.5,
+        22.2,
+        23.8,
+        19.8,
+        20.0,
+        21.8,
+        23.9,
+        22.4,
+      ],
+    ],
+  ]
 ```
 2. Nginx - of course not needed at the moment for this small application, but if this application is to reach production it will be needed to deal with a high number of concurent connections, load balancing, caching, serving static content quickly.
 
@@ -102,6 +118,8 @@ Then we can check the TTL of the cache.
 ```
 ttl "laravel-database-laravel-cache-weather:42.69751,23.32415"
 (integer) 2961
+GET "laravel-database-laravel-cache-weather:42.69751,23.32415"
+"a:4:{s:3:\"lat\";d:42.69751;s:3:\"lon\";d:23.32415;s:4:\"city\";s:5:\"Sofia\";s:7:\"country\";s:8:\"Bulgaria\";}"
 ```
 ## Ideas for improvement
 
@@ -116,7 +134,7 @@ And Warsaw, USA..
 
 I couldn't find an API where I can filter cities by country, postal code or country ISO code:
 
-https://geocoding-api.open-meteo.com/v1/search?name=Sofia&count=1 
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia&count=1
 
 Filters do not work:
 
@@ -127,7 +145,7 @@ Filters do not work:
 
 What's more if I decide to loop over the results and select a city by country what happens when there are two cites called `Sofia` in `Moldova` for example? Same country_code, country, timezone:
 
-https://geocoding-api.open-meteo.com/v1/search?name=Sofia 
+https://geocoding-api.open-meteo.com/v1/search?name=Sofia
 
 I thought of using another free tier API like `http://api.openweathermap.org/data/2.5/weather?q=sofia&appid={MY_API_KEY}&units=metric{&limit=1}`. Even without the filter it returns just one result.
 

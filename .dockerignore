@@ -1,0 +1,11 @@
+.git
+vendor
+node_modules
+storage
+# .env
+.idea
+.vscode
+coverage
+.DS_Store
+*.log
+*.cache

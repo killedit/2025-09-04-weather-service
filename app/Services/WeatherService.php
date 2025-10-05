@@ -11,6 +11,8 @@ class WeatherService
     {
         $cacheKey = "weather:$lat,$lon";
 
+        // https://api.open-meteo.com/v1/forecast?latitude=42.6875&longitude=23.3125&daily=temperature_2m_mean&current_weather=1&timezone=auto&past_days=10&forecast_days=0
+
         return Cache::remember($cacheKey, 3600, function() use ($lat, $lon) {
             $url = "https://api.open-meteo.com/v1/forecast";
 
@@ -39,6 +41,7 @@ class WeatherService
         }
 
         $temps = $daily['temperature_2m_mean'];
-    return array_sum($temps) / count($temps);
+
+        return array_sum($temps) / count($temps);
     }
 }

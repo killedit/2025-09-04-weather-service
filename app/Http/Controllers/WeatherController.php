@@ -22,17 +22,12 @@ class WeatherController extends Controller
         $geoData = $geo->getCoordinates($city);
 
         if (!$geoData) {
-            // abort(404, "City not found");
+
             if (request()->wantsJson()) {
                 return response()->json(['error' => 'City not found'], 404);
             }
             return view('weather.show', ['error' => 'City not found']);
         }
-
-        // $data = $this->weather->getWeather($geoData['lat'], $geoData['lon']);
-        // if (!$data) {
-        //     abort(500, "Weather API failed");
-        // }
 
         $weather = app(\App\Services\WeatherService::class);
         $weatherData = $weather->getWeather($geoData['lat'], $geoData['lon']);
@@ -48,13 +43,6 @@ class WeatherController extends Controller
         } else {
             $sign = "~";
         }
-
-        // return view('weather.show', [
-        //     'city' => ucfirst($city),
-        //     'country' => ucfirst($geoData['country']),
-        //     'temperature' => $current,
-        //     'sign' => $sign,
-        // ]);
 
         $data = [
             'city' => ucfirst($city),

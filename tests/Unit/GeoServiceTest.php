@@ -14,10 +14,10 @@ class GeoServiceTest extends TestCase
             'https://geocoding-api.open-meteo.com/*' => Http::response([
                 'results' => [
                     [
-                        'name' => 'Sofia',
-                        'country' => 'BG',
-                        'latitude' => 42.6977,
-                        'longitude' => 23.3219,
+                        'city' => 'Sofia',
+                        'country' => 'Bulgaria',
+                        'lat' => 42.69751,
+                        'lon' => 23.32415,
                     ]
                 ]
             ], 200),
@@ -28,9 +28,9 @@ class GeoServiceTest extends TestCase
 
         $this->assertNotNull($result);
         $this->assertEquals('Sofia', $result['city']);
-        $this->assertEquals('BG', $result['country']);
-        $this->assertEquals(42.6977, $result['lat']);
-        $this->assertEquals(23.3219, $result['lon']);
+        $this->assertEquals('Bulgaria', $result['country']);
+        $this->assertEquals(42.69751, $result['lat']);
+        $this->assertEquals(23.32415, $result['lon']);
     }
 
     public function test_get_coordinates_returns_null_when_city_not_found()

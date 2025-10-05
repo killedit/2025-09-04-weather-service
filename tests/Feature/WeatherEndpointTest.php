@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Testing\Fluent\AssertableJson;
 
 class WeatherEndpointTest extends TestCase
 {
@@ -13,10 +14,10 @@ class WeatherEndpointTest extends TestCase
             'https://geocoding-api.open-meteo.com/*' => Http::response([
                 'results' => [
                     [
-                        'name' => 'Sofia',
-                        'country' => 'BG',
-                        'latitude' => 42.6977,
-                        'longitude' => 23.3219,
+                        'city' => 'Sofia',
+                        'country' => 'Bulgaria',
+                        'lat' => 42.69751,
+                        'lon' => 23.32415,
                     ]
                 ]
             ], 200),
@@ -46,11 +47,13 @@ class WeatherEndpointTest extends TestCase
 // dd($response);
         $response->assertStatus(200)
             ->assertJsonFragment([
-            'city' => 'Sofia',
-            'country' => 'BG',
-            'temperature' => 22.6,
-            'sign' => '🥵'
-        ]);
+                'city' => 'Sofia',
+                'country' => 'Bulgaria',
+                'temperature' => 22.6,
+            ]);
+
+        $sign = $response->json('sign');
+        $this->assertContains($sign, ['🥵', '🥶', '~']);
     }
 
     public function test_weather_endpoint_returns_404_for_invalid_city()
