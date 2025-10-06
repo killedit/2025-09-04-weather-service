@@ -1,6 +1,6 @@
 # Weather Service Application
 
-![alt text](/resources/images/weather-service-screenshot.png)
+![web appliction interface](/resources/images/weather-service-screenshot.png)
 
 This application displays current temperature and a trend for a city in Celsius. It's a RESTful API with just one resource.
 
@@ -200,5 +200,12 @@ App\Services\WeatherService
   Methods:   0.00% ( 0/ 2)   Lines:  90.00% ( 18/ 20)
 ```
 
-The results are generated in a Dashboard in `/storage/coverage/index.html`.
+The results are generated in a Dashboard in `/storage/coverage/index.html`. The information that can be seen below is misleading since I don't have models or providers. <small>(I did not register my GeoService and WeatherService in IoC container since I will not need to inject them anywhere, i.e. make them globally available via dependency injection.)</small>
 
+![phpunit test coverage](/resources/images/phpunit-coverage-screenshot.png)
+
+I need full coverage in my `/HTTP/Controllers/WeatherController.php`, `/Services/GeoService.php` and `/Services/WeatherService.php`.
+
+![GeoService test coverage](/resources/images/phpunit-coverage-geoservice-screenshot.png)
+
+After running the updated tests all lines in these files are covered!
